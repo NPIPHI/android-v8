@@ -6,10 +6,6 @@ index 233e8b0e7..bac05fa19 100644
    lib_dirs = [ android_libcpp_lib_dir ]
  
    libs = []
--  libs += [ "android_support" ]
-+  if (current_cpu != "arm64" && current_cpu != "x64") {
-+    libs += [ "android_support" ]
-+  }
  
    # arm builds of libc++ starting in NDK r12 depend on unwind.
    if (current_cpu == "arm") {
