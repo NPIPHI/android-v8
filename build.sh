@@ -25,11 +25,11 @@ for CURRENT_ARCH in ${ARCH_ARR[@]}
 do
         ARGS=
         if [[ $BUILD_TYPE == "debug" ]] ;then
-                gn gen $BUILD_DIR_PREFIX/$CURRENT_ARCH-$BUILD_TYPE --args="is_component_build=true v8_use_external_startup_data=true is_debug=true symbol_level=2 target_cpu=\"$CURRENT_ARCH\" v8_target_cpu=\"$CURRENT_ARCH\" v8_enable_i18n_support=false target_os=\"android\" v8_android_log_stdout=false"
-                gn gen $BUILD_DIR_PREFIX/$SNAPSHOT_PREFIX$CURRENT_ARCH-$BUILD_TYPE --args="is_component_build=false v8_use_external_startup_data=true is_debug=true symbol_level=2 target_cpu=\"$CURRENT_ARCH\" v8_target_cpu=\"$CURRENT_ARCH\" v8_enable_i18n_support=false target_os=\"android\" v8_android_log_stdout=false"
+                gn gen $BUILD_DIR_PREFIX/$CURRENT_ARCH-$BUILD_TYPE --args="is_component_build=true v8_use_external_startup_data=false is_debug=true symbol_level=2 target_cpu=\"$CURRENT_ARCH\" v8_target_cpu=\"$CURRENT_ARCH\" v8_enable_i18n_support=false target_os=\"android\" v8_android_log_stdout=false"
+                gn gen $BUILD_DIR_PREFIX/$SNAPSHOT_PREFIX$CURRENT_ARCH-$BUILD_TYPE --args="is_component_build=false v8_use_external_startup_data=false is_debug=true symbol_level=2 target_cpu=\"$CURRENT_ARCH\" v8_target_cpu=\"$CURRENT_ARCH\" v8_enable_i18n_support=false target_os=\"android\" v8_android_log_stdout=false"
         else
-                gn gen $BUILD_DIR_PREFIX/$CURRENT_ARCH-$BUILD_TYPE --args="is_component_build=true v8_use_external_startup_data=true is_official_build=true use_thin_lto=false is_debug=false symbol_level=0 target_cpu=\"$CURRENT_ARCH\" v8_target_cpu=\"$CURRENT_ARCH\" v8_enable_i18n_support=false target_os=\"android\" v8_android_log_stdout=false"
-                gn gen $BUILD_DIR_PREFIX/$SNAPSHOT_PREFIX$CURRENT_ARCH-$BUILD_TYPE --args="is_component_build=false v8_use_external_startup_data=true is_official_build=true use_thin_lto=false is_debug=false symbol_level=0 target_cpu=\"$CURRENT_ARCH\" v8_target_cpu=\"$CURRENT_ARCH\" v8_enable_i18n_support=false target_os=\"android\" v8_android_log_stdout=false"
+                gn gen $BUILD_DIR_PREFIX/$CURRENT_ARCH-$BUILD_TYPE --args="is_component_build=true v8_use_external_startup_data=true is_official_build=false use_thin_lto=false is_debug=false symbol_level=0 target_cpu=\"$CURRENT_ARCH\" v8_target_cpu=\"$CURRENT_ARCH\" v8_enable_i18n_support=false target_os=\"android\" v8_android_log_stdout=false"
+                gn gen $BUILD_DIR_PREFIX/$SNAPSHOT_PREFIX$CURRENT_ARCH-$BUILD_TYPE --args="is_component_build=false v8_use_external_startup_data=false is_official_build=true use_thin_lto=false is_debug=false symbol_level=0 target_cpu=\"$CURRENT_ARCH\" v8_target_cpu=\"$CURRENT_ARCH\" v8_enable_i18n_support=false target_os=\"android\" v8_android_log_stdout=false"
 
         fi
 done
