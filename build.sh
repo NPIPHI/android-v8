@@ -26,11 +26,8 @@ do
         ARGS=
         if [[ $BUILD_TYPE == "debug" ]] ;then
                 gn gen $BUILD_DIR_PREFIX/$CURRENT_ARCH-$BUILD_TYPE --args="is_component_build=true v8_use_external_startup_data=false is_debug=true symbol_level=2 target_cpu=\"$CURRENT_ARCH\" v8_target_cpu=\"$CURRENT_ARCH\" v8_enable_i18n_support=false target_os=\"android\" v8_android_log_stdout=false"
-                gn gen $BUILD_DIR_PREFIX/$SNAPSHOT_PREFIX$CURRENT_ARCH-$BUILD_TYPE --args="is_component_build=false v8_use_external_startup_data=false is_debug=true symbol_level=2 target_cpu=\"$CURRENT_ARCH\" v8_target_cpu=\"$CURRENT_ARCH\" v8_enable_i18n_support=false target_os=\"android\" v8_android_log_stdout=false"
         else
                 gn gen $BUILD_DIR_PREFIX/$CURRENT_ARCH-$BUILD_TYPE --args="is_component_build=true v8_use_external_startup_data=false is_official_build=false use_thin_lto=false is_debug=false symbol_level=0 target_cpu=\"$CURRENT_ARCH\" v8_target_cpu=\"$CURRENT_ARCH\" v8_enable_i18n_support=false target_os=\"android\" v8_android_log_stdout=false"
-                gn gen $BUILD_DIR_PREFIX/$SNAPSHOT_PREFIX$CURRENT_ARCH-$BUILD_TYPE --args="is_component_build=false v8_use_external_startup_data=false is_official_build=true use_thin_lto=false is_debug=false symbol_level=0 target_cpu=\"$CURRENT_ARCH\" v8_target_cpu=\"$CURRENT_ARCH\" v8_enable_i18n_support=false target_os=\"android\" v8_android_log_stdout=false"
-
         fi
 done
 
@@ -39,11 +36,10 @@ COUNT=0
 for CURRENT_ARCH in ${ARCH_ARR[@]}
 do
         # make fat build
-        V8_FOLDERS=(v8_compiler v8_base_without_compiler v8_libplatform v8_libbase v8_libsampler v8_snapshot v8_initializers v8_init torque_generated_initializers)
+        V8_FOLDERS=(v8_compiler v8_base_without_compiler v8_libplatform v8_libbase v8_libsampler v8_snapshot v8_initializers v8_init torque_generated_initializers inspector)
 
         SECONDS=0
-        ninja -C $BUILD_DIR_PREFIX/$CURRENT_ARCH-$BUILD_TYPE ${V8_FOLDERS[@]} inspector
-        ninja -C $BUILD_DIR_PREFIX/$SNAPSHOT_PREFIX$CURRENT_ARCH-$BUILD_TYPE run_mksnapshot_default
+        ninja -C $BUILD_DIR_PREFIX/$CURRENT_ARCH-$BUILD_TYPE ${V8_FOLDERS[@]}
 
         echo "build finished in $SECONDS seconds"
 
@@ -74,36 +70,6 @@ do
 
         eval $CURRENT_BUILD_TOOL/ar r $DIST/$CURRENT_ARCH-$BUILD_TYPE/libv8.a "${LAST_PARAM}"
 
-        echo "=================================="
-        echo "=================================="
-        echo "Copying snapshot binaries for $CURRENT_ARCH"
-        echo "=================================="
-        echo "=================================="
-        DIST="./dist/snapshots/$CURRENT_ARCH-$BUILD_TYPE/"
-        mkdir -p $DIST
-
-        SOURCE_DIR=
-        if [[ $CURRENT_ARCH == "arm64" ]] ;then
-                SOURCE_DIR=$BUILD_DIR_PREFIX/$SNAPSHOT_PREFIX$CURRENT_ARCH-$BUILD_TYPE/clang_x64_v8_$CURRENT_ARCH
-        elif [[ $CURRENT_ARCH == "arm" ]] ;then
-                SOURCE_DIR=$BUILD_DIR_PREFIX/$SNAPSHOT_PREFIX$CURRENT_ARCH-$BUILD_TYPE/clang_x86_v8_$CURRENT_ARCH
-        elif [[ $CURRENT_ARCH == "x86" ]] ;then
-                SOURCE_DIR=$BUILD_DIR_PREFIX/$SNAPSHOT_PREFIX$CURRENT_ARCH-$BUILD_TYPE/clang_x86
-        elif [[ $CURRENT_ARCH == "x64" ]] ;then
-                SOURCE_DIR=$BUILD_DIR_PREFIX/$SNAPSHOT_PREFIX$CURRENT_ARCH-$BUILD_TYPE/clang_x64
-        fi
-
-        cp -r $SOURCE_DIR/mksnapshot $DIST
-
-        echo "=================================="
-        echo "=================================="
-        echo "Preparing snapshot headers for $CURRENT_ARCH"
-        echo "=================================="
-        echo "=================================="
-
-        INCLUDE="$(pwd)/dist/$CURRENT_ARCH-$BUILD_TYPE/include"
-        mkdir -p $INCLUDE
-
         SOURCE_DIR=
         if [[ $CURRENT_ARCH == "arm64" ]] ;then
                 SOURCE_DIR=$BUILD_DIR_PREFIX/$CURRENT_ARCH-$BUILD_TYPE/clang_x64_v8_$CURRENT_ARCH
@@ -114,8 +80,4 @@ do
         elif [[ $CURRENT_ARCH == "x64" ]] ;then
                 SOURCE_DIR=$BUILD_DIR_PREFIX/$CURRENT_ARCH-$BUILD_TYPE/clang_x64
         fi
-
-        pushd $SOURCE_DIR/..
-        xxd -i snapshot_blob.bin > $INCLUDE/snapshot_blob.h
-        popd
 done
