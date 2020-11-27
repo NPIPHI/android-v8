@@ -2,7 +2,6 @@
 
 ## prepare configuration
 
-SNAPSHOT_PREFIX="snapshot-"
 NDK_BUILD_TOOLS_ARR=($ANDROID_NDK_HOME/toolchains/arm-linux-androideabi-4.9/prebuilt/linux-x86_64/arm-linux-androideabi/bin \
         $ANDROID_NDK_HOME/toolchains/aarch64-linux-android-4.9/prebuilt/linux-x86_64/aarch64-linux-android/bin \
         $ANDROID_NDK_HOME/toolchains/x86-4.9/prebuilt/linux-x86_64/i686-linux-android/bin \
